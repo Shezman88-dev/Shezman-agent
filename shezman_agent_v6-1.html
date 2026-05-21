@@ -1,0 +1,1493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Shezman Enterprises – True AI Agent v6</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@300;400;500;600;700&family=Barlow+Condensed:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+:root {
+  --gold: #C9933A;
+  --gold-light: #E8B55A;
+  --gold-dim: rgba(201,147,58,0.15);
+  --dark: #060606;
+  --dark2: #0D0D0D;
+  --dark3: #141414;
+  --dark4: #1A1A1A;
+  --dark5: #222222;
+  --border: #252525;
+  --border2: #2E2E2E;
+  --text: #E8DFC8;
+  --text2: #A89880;
+  --muted: #5A5040;
+  --green: #2ECC71;
+  --green-dim: rgba(46,204,113,0.12);
+  --blue: #5B8FD4;
+  --blue-dim: rgba(91,143,212,0.12);
+  --red: #E05555;
+  --red-dim: rgba(224,85,85,0.12);
+  --purple: #9B6EE0;
+}
+
+*{box-sizing:border-box;margin:0;padding:0;}
+
+body {
+  background: var(--dark);
+  color: var(--text);
+  font-family: 'Barlow', sans-serif;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* ===== HEADER ===== */
+header {
+  background: var(--dark2);
+  border-bottom: 1px solid var(--border);
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+  position: relative;
+}
+header::after {
+  content:'';
+  position:absolute;
+  bottom:0;left:0;right:0;
+  height:2px;
+  background: linear-gradient(90deg, var(--gold), transparent 60%);
+}
+
+.logo-wrap {
+  width: 38px; height: 38px;
+  border-radius: 8px;
+  background: #fff;
+  display:flex; align-items:center; justify-content:center;
+  overflow:hidden; flex-shrink:0;
+  box-shadow: 0 0 20px rgba(201,147,58,0.25);
+}
+.logo-wrap img { width:100%; height:100%; object-fit:contain; }
+.logo-initials {
+  font-family:'Bebas Neue',sans-serif;
+  font-size:16px; color:#C9933A; letter-spacing:1px;
+}
+
+.hdr-text h1 {
+  font-family:'Bebas Neue',sans-serif;
+  font-size:18px; letter-spacing:2px; color:var(--gold-light); line-height:1;
+}
+.hdr-text p {
+  font-size:9px; color:var(--muted); font-weight:600;
+  letter-spacing:1.5px; text-transform:uppercase; margin-top:2px;
+}
+
+.hdr-right {
+  margin-left:auto; display:flex; align-items:center; gap:10px;
+}
+
+.agent-badge {
+  display:flex; align-items:center; gap:5px;
+  background: var(--green-dim);
+  border: 1px solid rgba(46,204,113,0.25);
+  border-radius:20px; padding:3px 10px;
+  font-size:10px; font-weight:700; color:var(--green);
+  letter-spacing:0.8px; text-transform:uppercase;
+}
+.dot {
+  width:6px; height:6px; border-radius:50%;
+  background:var(--green); box-shadow:0 0 6px var(--green);
+  animation: blink 2s infinite;
+}
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+.settings-btn {
+  background: var(--dark4); border:1px solid var(--border2);
+  color:var(--text2); border-radius:6px; padding:5px 10px;
+  font-size:11px; font-weight:600; cursor:pointer;
+  transition:all 0.2s; font-family:'Barlow',sans-serif;
+}
+.settings-btn:hover { border-color:var(--gold); color:var(--gold-light); }
+
+/* ===== MAIN LAYOUT ===== */
+.main {
+  display:flex; flex:1; overflow:hidden;
+}
+
+/* ===== LEFT SIDEBAR ===== */
+.sidebar {
+  width:220px; flex-shrink:0;
+  background: var(--dark2);
+  border-right:1px solid var(--border);
+  display:flex; flex-direction:column;
+  overflow-y:auto; overflow-x:hidden;
+}
+
+.sidebar-section {
+  padding: 12px 12px 8px;
+  border-bottom:1px solid var(--border);
+}
+.sidebar-label {
+  font-size:9px; font-weight:700; color:var(--muted);
+  letter-spacing:1.5px; text-transform:uppercase; margin-bottom:8px;
+}
+
+.tool-btn {
+  width:100%; text-align:left;
+  background:transparent; border:1px solid transparent;
+  color:var(--text2); border-radius:6px; padding:7px 10px;
+  font-size:11.5px; font-family:'Barlow',sans-serif; font-weight:500;
+  cursor:pointer; transition:all 0.15s; margin-bottom:3px;
+  display:flex; align-items:center; gap:8px;
+}
+.tool-btn:hover { background:var(--dark4); border-color:var(--border2); color:var(--text); }
+.tool-btn.active { background:var(--gold-dim); border-color:rgba(201,147,58,0.3); color:var(--gold-light); }
+.tool-btn .t-icon { font-size:13px; flex-shrink:0; }
+.tool-btn .t-badge {
+  margin-left:auto; font-size:9px; font-weight:700;
+  padding:1px 5px; border-radius:3px;
+}
+.t-badge.green { background:var(--green-dim); color:var(--green); }
+.t-badge.blue { background:var(--blue-dim); color:var(--blue); }
+.t-badge.gold { background:var(--gold-dim); color:var(--gold-light); }
+
+/* memory list */
+.mem-list { max-height:160px; overflow-y:auto; }
+.mem-item {
+  background:var(--dark3); border:1px solid var(--border);
+  border-radius:5px; padding:6px 8px; margin-bottom:4px;
+  font-size:10.5px; color:var(--text2); line-height:1.4;
+  cursor:pointer; transition:all 0.15s;
+}
+.mem-item:hover { border-color:var(--gold); color:var(--text); }
+.mem-item .mem-date { font-size:9px; color:var(--muted); margin-top:2px; }
+
+.clear-btn {
+  width:100%; background:var(--red-dim); border:1px solid rgba(224,85,85,0.2);
+  color:var(--red); border-radius:5px; padding:5px;
+  font-size:10px; font-weight:700; cursor:pointer; margin-top:6px;
+  font-family:'Barlow',sans-serif; letter-spacing:0.5px;
+}
+.clear-btn:hover { background:rgba(224,85,85,0.2); }
+
+/* stats */
+.stat-grid { display:grid; grid-template-columns:1fr 1fr; gap:5px; }
+.stat-box {
+  background:var(--dark3); border:1px solid var(--border);
+  border-radius:6px; padding:7px 8px; text-align:center;
+}
+.stat-num { font-family:'Bebas Neue',sans-serif; font-size:20px; color:var(--gold-light); line-height:1; }
+.stat-lbl { font-size:9px; color:var(--muted); font-weight:600; text-transform:uppercase; letter-spacing:0.8px; }
+
+/* ===== CHAT AREA ===== */
+.chat-wrap {
+  flex:1; display:flex; flex-direction:column; overflow:hidden;
+}
+
+/* module tabs */
+.mod-tabs {
+  background:var(--dark3); border-bottom:1px solid var(--border);
+  display:flex; overflow-x:auto; scrollbar-width:none; flex-shrink:0;
+}
+.mod-tabs::-webkit-scrollbar { display:none; }
+.mod-tab {
+  flex-shrink:0; padding:9px 14px;
+  font-size:10px; font-weight:700; letter-spacing:0.5px;
+  text-transform:uppercase; color:var(--muted);
+  border-bottom:2px solid transparent; cursor:default;
+  white-space:nowrap; transition:all 0.2s;
+}
+.mod-tab.p { border-color:var(--green); color:var(--green); }
+.mod-tab.o { border-color:var(--blue); color:var(--blue); }
+.mod-tab.s { border-color:var(--gold); color:var(--gold-light); }
+
+/* quick prompts */
+.quick-bar {
+  padding:10px 14px; background:var(--dark2);
+  border-bottom:1px solid var(--border); flex-shrink:0;
+}
+.quick-label { font-size:9px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:1.5px; margin-bottom:7px; }
+.quick-grid { display:flex; flex-wrap:wrap; gap:5px; }
+.q-btn {
+  background:var(--dark3); border:1px solid var(--border);
+  color:var(--text2); border-radius:5px; padding:5px 10px;
+  font-size:11px; font-family:'Barlow',sans-serif; font-weight:500;
+  cursor:pointer; transition:all 0.2s; white-space:nowrap;
+}
+.q-btn:hover { border-color:var(--gold); color:var(--gold-light); background:var(--gold-dim); }
+.q-btn.g:hover { border-color:var(--green); color:var(--green); background:var(--green-dim); }
+.q-btn.b:hover { border-color:var(--blue); color:var(--blue); background:var(--blue-dim); }
+
+/* chat messages */
+.chat {
+  flex:1; overflow-y:auto; padding:16px 14px;
+  display:flex; flex-direction:column; gap:14px;
+}
+.chat::-webkit-scrollbar { width:4px; }
+.chat::-webkit-scrollbar-track { background:transparent; }
+.chat::-webkit-scrollbar-thumb { background:var(--border2); border-radius:2px; }
+
+.msg { display:flex; gap:9px; animation:fadeUp 0.3s ease; }
+.msg.user { flex-direction:row-reverse; }
+@keyframes fadeUp { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
+
+.av {
+  width:30px; height:30px; border-radius:7px;
+  display:flex; align-items:center; justify-content:center;
+  font-family:'Bebas Neue',sans-serif; font-size:12px; flex-shrink:0;
+}
+.av.ai { background:#fff; border:1px solid var(--border2); color:#fff; overflow:hidden; padding:0; }
+.av.you { background:var(--dark4); border:1px solid var(--border2); color:var(--muted); font-size:10px; }
+
+.bub {
+  max-width:78%; padding:11px 14px;
+  border-radius:10px; font-size:13px; line-height:1.7;
+}
+.bub.ai {
+  background:var(--dark3); border:1px solid var(--border);
+  border-top-left-radius:3px;
+}
+.bub.user {
+  background:var(--gold-dim); border:1px solid rgba(201,147,58,0.2);
+  border-top-right-radius:3px;
+}
+.bub strong { color:var(--gold-light); }
+.bub ul { margin:7px 0 4px 16px; }
+.bub li { margin-bottom:4px; }
+.bub .tool-result {
+  background:var(--dark4); border:1px solid var(--border2);
+  border-left:3px solid var(--green); border-radius:6px;
+  padding:8px 10px; margin:8px 0; font-size:12px;
+  font-family:'JetBrains Mono',monospace; color:var(--green);
+}
+.bub .plan-block {
+  background:var(--dark4); border:1px solid var(--border2);
+  border-left:3px solid var(--blue); border-radius:6px;
+  padding:8px 10px; margin:8px 0; font-size:12px; color:var(--blue);
+}
+
+.mod-badge {
+  display:inline-block; font-size:9px; font-weight:700;
+  letter-spacing:0.8px; text-transform:uppercase;
+  padding:2px 7px; border-radius:3px; margin-bottom:6px; margin-right:3px;
+}
+.mb-p { background:var(--green-dim); border:1px solid rgba(46,204,113,0.25); color:var(--green); }
+.mb-o { background:var(--blue-dim); border:1px solid rgba(91,143,212,0.25); color:var(--blue); }
+.mb-s { background:var(--gold-dim); border:1px solid rgba(201,147,58,0.25); color:var(--gold-light); }
+.mb-t { background:rgba(155,110,224,0.12); border:1px solid rgba(155,110,224,0.25); color:var(--purple); }
+
+/* typing */
+.typing { display:flex; gap:4px; align-items:center; padding:11px 14px; }
+.typing span {
+  width:6px; height:6px; border-radius:50%; background:var(--gold);
+  animation: ty 1.2s infinite;
+}
+.typing span:nth-child(2){animation-delay:0.2s}
+.typing span:nth-child(3){animation-delay:0.4s}
+@keyframes ty { 0%,100%{opacity:0.2;transform:scale(0.8)} 50%{opacity:1;transform:scale(1.1)} }
+
+/* input area */
+.input-area {
+  background:var(--dark2); border-top:1px solid var(--border);
+  padding:12px 14px; flex-shrink:0;
+}
+.input-row {
+  display:flex; gap:8px; align-items:flex-end;
+}
+textarea {
+  flex:1; background:var(--dark3); border:1px solid var(--border2);
+  color:var(--text); border-radius:8px; padding:10px 13px;
+  font-size:13px; font-family:'Barlow',sans-serif; resize:none;
+  max-height:100px; line-height:1.5; outline:none; transition:border 0.2s;
+}
+textarea:focus { border-color:var(--gold); }
+textarea::placeholder { color:var(--muted); }
+
+.send-btn {
+  background:linear-gradient(135deg,var(--gold),#8A5A10);
+  border:none; border-radius:8px; padding:10px 16px;
+  color:#fff; font-weight:700; font-size:12px; font-family:'Barlow',sans-serif;
+  cursor:pointer; transition:all 0.2s; white-space:nowrap; flex-shrink:0;
+  letter-spacing:0.5px;
+}
+.send-btn:hover { opacity:0.9; transform:translateY(-1px); }
+.send-btn:disabled { opacity:0.4; cursor:not-allowed; transform:none; }
+
+.input-meta {
+  display:flex; justify-content:space-between; align-items:center;
+  margin-top:7px; font-size:10px; color:var(--muted);
+}
+.agent-mode {
+  display:flex; align-items:center; gap:5px;
+  font-weight:700; letter-spacing:0.5px; text-transform:uppercase;
+}
+.mode-dot { width:5px; height:5px; border-radius:50%; background:var(--green); }
+
+/* ===== PANELS ===== */
+.panel-overlay {
+  position:fixed; inset:0; background:rgba(0,0,0,0.7);
+  z-index:100; display:none; align-items:center; justify-content:center;
+}
+.panel-overlay.open { display:flex; }
+
+.panel {
+  background:var(--dark2); border:1px solid var(--border2);
+  border-radius:12px; padding:24px; width:420px; max-width:95vw;
+  max-height:90vh; overflow-y:auto;
+}
+.panel h2 {
+  font-family:'Bebas Neue',sans-serif; font-size:20px;
+  color:var(--gold-light); letter-spacing:2px; margin-bottom:4px;
+}
+.panel-sub { font-size:11px; color:var(--muted); margin-bottom:18px; }
+
+.field { margin-bottom:14px; }
+.field label { display:block; font-size:11px; font-weight:700; color:var(--text2); margin-bottom:5px; letter-spacing:0.5px; }
+.field input, .field select {
+  width:100%; background:var(--dark3); border:1px solid var(--border2);
+  color:var(--text); border-radius:7px; padding:9px 12px;
+  font-size:13px; font-family:'Barlow',sans-serif; outline:none;
+  transition:border 0.2s;
+}
+.field input:focus, .field select:focus { border-color:var(--gold); }
+.field input[type=password] { letter-spacing:2px; }
+.field select option { background:var(--dark3); }
+
+.save-btn {
+  width:100%; background:linear-gradient(135deg,var(--gold),#8A5A10);
+  border:none; border-radius:8px; padding:11px;
+  color:#fff; font-weight:700; font-size:13px; font-family:'Barlow',sans-serif;
+  cursor:pointer; margin-top:4px; letter-spacing:0.5px;
+}
+.save-btn:hover { opacity:0.9; }
+.close-btn {
+  float:right; background:transparent; border:none;
+  color:var(--muted); font-size:18px; cursor:pointer; line-height:1;
+}
+.close-btn:hover { color:var(--text); }
+
+/* tool panel */
+.tool-output {
+  background:var(--dark3); border:1px solid var(--border);
+  border-radius:8px; padding:14px; margin-top:12px;
+  font-family:'JetBrains Mono',monospace; font-size:11.5px;
+  color:var(--green); line-height:1.6; white-space:pre-wrap; max-height:320px; overflow-y:auto;
+}
+
+/* quotation panel */
+.quot-table {
+  width:100%; border-collapse:collapse; margin-top:10px;
+  font-size:12px;
+}
+.quot-table th {
+  background:var(--dark4); padding:7px 9px; text-align:left;
+  font-size:10px; font-weight:700; color:var(--muted);
+  text-transform:uppercase; letter-spacing:0.8px;
+  border-bottom:1px solid var(--border);
+}
+.quot-table td {
+  padding:7px 9px; border-bottom:1px solid var(--border);
+  color:var(--text2);
+}
+.quot-table tr:last-child td { border-bottom:none; }
+.quot-total {
+  display:flex; justify-content:space-between;
+  padding:10px 9px; margin-top:4px;
+  background:var(--gold-dim); border-radius:6px;
+  font-weight:700; color:var(--gold-light);
+}
+
+/* right panel — tool runner */
+.right-panel {
+  width:0; overflow:hidden; transition:width 0.3s ease;
+  background:var(--dark2); border-left:1px solid var(--border);
+  display:flex; flex-direction:column;
+}
+.right-panel.open { width:280px; }
+.rp-header {
+  padding:12px 14px; border-bottom:1px solid var(--border);
+  display:flex; align-items:center; justify-content:space-between;
+}
+.rp-title { font-family:'Bebas Neue',sans-serif; font-size:15px; letter-spacing:1.5px; color:var(--gold-light); }
+.rp-close { background:none; border:none; color:var(--muted); cursor:pointer; font-size:16px; }
+.rp-body { padding:12px; flex:1; overflow-y:auto; }
+.rp-tool {
+  background:var(--dark3); border:1px solid var(--border);
+  border-radius:7px; padding:10px; margin-bottom:8px; cursor:pointer;
+  transition:all 0.2s;
+}
+.rp-tool:hover { border-color:var(--gold); }
+.rp-tool-name { font-size:12px; font-weight:700; color:var(--text); margin-bottom:2px; }
+.rp-tool-desc { font-size:10.5px; color:var(--muted); }
+.rp-output {
+  background:var(--dark4); border:1px solid var(--border);
+  border-radius:7px; padding:10px; margin-top:8px;
+  font-family:'JetBrains Mono',monospace; font-size:10.5px;
+  color:var(--green); line-height:1.6; white-space:pre-wrap;
+  min-height:80px;
+}
+
+/* responsive */
+@media(max-width:768px){
+  .sidebar { display:none; }
+  .right-panel { display:none; }
+  .bub { max-width:90%; }
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="logo-wrap">
+    <img src="data:image/png;base64,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" alt="Shezman Enterprises Logo"/>
+  </div>
+  <div class="hdr-text">
+    <h1>Shezman Enterprises</h1>
+    <p>True AI Agent · Procurement & Operations Intelligence</p>
+  </div>
+  <div class="hdr-right">
+    <div class="agent-badge"><div class="dot"></div>Agent Active</div>
+    <button class="settings-btn" onclick="openSettings()">⚙ Settings</button>
+  </div>
+</header>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- LEFT SIDEBAR -->
+  <div class="sidebar">
+
+    <!-- AGENT TOOLS -->
+    <div class="sidebar-section">
+      <div class="sidebar-label">⚙ Agent Tools</div>
+      <button class="tool-btn" onclick="runTool('supplier')">
+        <span class="t-icon">🔍</span> Supplier Search
+        <span class="t-badge green">LIVE</span>
+      </button>
+      <button class="tool-btn" onclick="runTool('price')">
+        <span class="t-icon">💰</span> Price Intel
+        <span class="t-badge green">LIVE</span>
+      </button>
+      <button class="tool-btn" onclick="runTool('quotation')">
+        <span class="t-icon">📄</span> Quotation Builder
+        <span class="t-badge gold">TOOL</span>
+      </button>
+      <button class="tool-btn" onclick="runTool('logistics')">
+        <span class="t-icon">🚛</span> Logistics Planner
+        <span class="t-badge blue">TOOL</span>
+      </button>
+      <button class="tool-btn" onclick="runTool('vendor')">
+        <span class="t-icon">✅</span> Vendor Checker
+        <span class="t-badge green">LIVE</span>
+      </button>
+      <button class="tool-btn" onclick="runTool('margin')">
+        <span class="t-icon">📊</span> Margin Calculator
+        <span class="t-badge gold">TOOL</span>
+      </button>
+      <button class="tool-btn" onclick="runTool('pitch')">
+        <span class="t-icon">🎯</span> NGO Pitch Writer
+        <span class="t-badge gold">TOOL</span>
+      </button>
+      <button class="tool-btn" onclick="runTool('plan')">
+        <span class="t-icon">🧠</span> Procurement Planner
+        <span class="t-badge blue">TOOL</span>
+      </button>
+    </div>
+
+    <!-- MEMORY -->
+    <div class="sidebar-section">
+      <div class="sidebar-label">🧠 Agent Memory</div>
+      <div class="mem-list" id="memList">
+        <div style="font-size:11px;color:var(--muted);padding:4px 0;">No sessions yet.</div>
+      </div>
+      <button class="clear-btn" onclick="clearMemory()">🗑 Clear All Memory</button>
+    </div>
+
+    <!-- STATS -->
+    <div class="sidebar-section">
+      <div class="sidebar-label">📈 Session Stats</div>
+      <div class="stat-grid">
+        <div class="stat-box">
+          <div class="stat-num" id="statMsgs">0</div>
+          <div class="stat-lbl">Messages</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-num" id="statTools">0</div>
+          <div class="stat-lbl">Tools Run</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-num" id="statSessions">0</div>
+          <div class="stat-lbl">Sessions</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-num" id="statMems">0</div>
+          <div class="stat-lbl">Memories</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- CHAT AREA -->
+  <div class="chat-wrap">
+
+    <!-- MODULE TABS -->
+    <div class="mod-tabs">
+      <div class="mod-tab p">📦 Supplier Sourcing</div>
+      <div class="mod-tab p">✅ Vendor Verification</div>
+      <div class="mod-tab p">💰 Price Intelligence</div>
+      <div class="mod-tab o">🔗 Supply Chain</div>
+      <div class="mod-tab o">🚛 Logistics</div>
+      <div class="mod-tab s">📄 Offer Creation</div>
+      <div class="mod-tab s">✍ Proposals</div>
+      <div class="mod-tab s">🎯 Objection Handling</div>
+      <div class="mod-tab s">📞 Follow-Up</div>
+      <div class="mod-tab s">💼 Pricing</div>
+      <div class="mod-tab s">🏛 NGO Pitch</div>
+      <div class="mod-tab s">🧠 Mindset</div>
+    </div>
+
+    <!-- QUICK PROMPTS -->
+    <div class="quick-bar">
+      <div class="quick-label">⚡ Quick Actions</div>
+      <div class="quick-grid">
+        <button class="q-btn g" onclick="ask('Find cement suppliers in Kaduna State')">🏗 Find Cement Suppliers</button>
+        <button class="q-btn g" onclick="ask('How do I verify a supplier before paying?')">✅ Verify Supplier</button>
+        <button class="q-btn g" onclick="ask('What is the current market price for diesel in Zaria?')">⛽ Diesel Price</button>
+        <button class="q-btn b" onclick="ask('Plan a supply chain for delivering 500 bags of rice to an NGO in Kaduna')">📦 Plan Supply Chain</button>
+        <button class="q-btn b" onclick="ask('Calculate logistics cost from Kano to Zaria for 2 tonnes')">🚛 Logistics Cost</button>
+        <button class="q-btn" onclick="ask('Write a pitch letter for Shezman Enterprises to an INGO in Abuja')">✍ Write NGO Pitch</button>
+        <button class="q-btn" onclick="ask('How do I handle a client who says our price is too high?')">💬 Handle Objection</button>
+        <button class="q-btn" onclick="ask('What should I focus on today to grow Shezman Enterprises?')">🎯 Daily Focus</button>
+      </div>
+    </div>
+
+    <!-- CHAT -->
+    <div class="chat" id="chat"></div>
+
+    <!-- INPUT -->
+    <div class="input-area">
+      <div class="input-row">
+        <textarea id="userInput" rows="1" placeholder="Ask your AI agent anything about procurement, suppliers, pricing, logistics, sales…" oninput="autoResize(this)" onkeydown="handleKey(event)"></textarea>
+        <button class="send-btn" id="sendBtn" onclick="sendMessage()">SEND ▶</button>
+      </div>
+      <div class="input-meta">
+        <div class="agent-mode"><div class="mode-dot"></div>Agent Mode · <span id="activeProviderLabel">Claude</span></div>
+        <div id="tokenCount" style="font-family:'JetBrains Mono',monospace;">tokens: 1500</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- RIGHT TOOL PANEL -->
+  <div class="right-panel" id="rightPanel">
+    <div class="rp-header">
+      <div class="rp-title" id="rpTitle">TOOL RUNNER</div>
+      <button class="rp-close" onclick="closeRightPanel()">✕</button>
+    </div>
+    <div class="rp-body" id="rpBody"></div>
+  </div>
+
+</div>
+
+<!-- SETTINGS PANEL -->
+<div class="panel-overlay" id="settingsOverlay">
+  <div class="panel">
+    <button class="close-btn" onclick="closeSettings()">✕</button>
+    <h2>Agent Settings</h2>
+    <p class="panel-sub">Configure your Shezman AI Agent · All settings saved locally</p>
+
+    <div class="field">
+      <label>AI PROVIDER</label>
+      <select id="providerSelect" onchange="updateProviderUI()">
+        <option value="anthropic">🟠 Anthropic (Claude)</option>
+        <option value="gemini">🔵 Google Gemini</option>
+        <option value="openrouter">🟣 OpenRouter (Llama, Mixtral — Free)</option>
+      </select>
+    </div>
+
+    <!-- Anthropic fields -->
+    <div id="anthropicFields">
+      <div class="field">
+        <label>ANTHROPIC API KEY</label>
+        <input type="password" id="apiKeyInput" placeholder="sk-ant-api03-…"/>
+      </div>
+      <div class="field">
+        <label>CLAUDE MODEL</label>
+        <select id="claudeModelSelect">
+          <option value="claude-sonnet-4-20250514">Claude Sonnet 4 (Recommended)</option>
+          <option value="claude-haiku-4-5-20251001">Claude Haiku 4.5 (Fast)</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Gemini fields -->
+    <div id="geminiFields" style="display:none;">
+      <div class="field">
+        <label>GEMINI API KEY</label>
+        <input type="password" id="geminiKeyInput" placeholder="AIza…"/>
+      </div>
+      <div class="field">
+        <label>GEMINI MODEL</label>
+        <select id="geminiModelSelect">
+          <option value="gemini-2.0-flash">Gemini 2.0 Flash (Fast)</option>
+          <option value="gemini-2.0-flash-thinking-exp">Gemini 2.0 Flash Thinking</option>
+          <option value="gemini-1.5-pro">Gemini 1.5 Pro</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- OpenRouter fields -->
+    <div id="groqFields" style="display:none;">
+      <div class="field">
+        <label>OPENROUTER API KEY</label>
+        <input type="password" id="groqKeyInput" placeholder="sk-or-v1-…"/>
+        <div style="font-size:10px;color:var(--muted);margin-top:4px;">Get free key at <strong>openrouter.ai</strong> → Sign Up → Keys</div>
+      </div>
+      <div class="field">
+        <label>MODEL</label>
+        <select id="groqModelSelect">
+          <option value="meta-llama/llama-3.3-70b-instruct:free">Llama 3.3 70B (Free)</option>
+          <option value="meta-llama/llama-3.1-8b-instruct:free">Llama 3.1 8B (Free, Fast)</option>
+          <option value="mistralai/mixtral-8x7b-instruct:free">Mixtral 8x7B (Free)</option>
+          <option value="google/gemma-3-4b-it:free">Gemma 3 4B (Free)</option>
+          <option value="deepseek/deepseek-r1:free">DeepSeek R1 (Free)</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>MAX RESPONSE TOKENS</label>
+      <input type="number" id="tokenInput" value="1500" min="300" max="4000" step="100"/>
+    </div>
+    <div class="field">
+      <label>AGENT PERSONA</label>
+      <select id="personaSelect">
+        <option value="procurement">Procurement Specialist</option>
+        <option value="sales">Sales & Business Developer</option>
+        <option value="operations">Operations Manager</option>
+        <option value="full">Full Agent (All Modules)</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>RESPONSE STYLE</label>
+      <select id="styleSelect">
+        <option value="direct">Direct & Concise</option>
+        <option value="detailed">Detailed & Thorough</option>
+        <option value="structured">Structured with Steps</option>
+      </select>
+    </div>
+    <button class="save-btn" onclick="saveSettings()">💾 SAVE SETTINGS</button>
+  </div>
+</div>
+
+<!-- QUOTATION PANEL -->
+<div class="panel-overlay" id="quotPanel">
+  <div class="panel" style="width:520px;">
+    <button class="close-btn" onclick="document.getElementById('quotPanel').classList.remove('open')">✕</button>
+    <h2>Quotation Builder</h2>
+    <p class="panel-sub">Build a professional procurement quotation for Shezman Enterprises</p>
+
+    <div class="field">
+      <label>CLIENT NAME</label>
+      <input type="text" id="qClient" placeholder="e.g. UNICEF Zaria Office"/>
+    </div>
+    <div class="field">
+      <label>ITEM / SERVICE</label>
+      <input type="text" id="qItem" placeholder="e.g. 200 bags of cement (Dangote)"/>
+    </div>
+    <div class="field">
+      <label>UNIT COST (₦)</label>
+      <input type="number" id="qUnit" placeholder="e.g. 5500"/>
+    </div>
+    <div class="field">
+      <label>QUANTITY</label>
+      <input type="number" id="qQty" placeholder="e.g. 200"/>
+    </div>
+    <div class="field">
+      <label>SERVICE FEE (%)</label>
+      <input type="number" id="qFee" placeholder="e.g. 8" value="8"/>
+    </div>
+    <div class="field">
+      <label>LOGISTICS COST (₦)</label>
+      <input type="number" id="qLogistics" placeholder="e.g. 50000" value="0"/>
+    </div>
+    <button class="save-btn" onclick="generateQuotation()">📄 GENERATE QUOTATION</button>
+    <div id="quotOutput" style="margin-top:12px;display:none;">
+      <table class="quot-table" id="quotTable"></table>
+      <div class="quot-total" id="quotTotal"></div>
+      <button class="save-btn" style="margin-top:10px;background:var(--dark4);border:1px solid var(--border2);color:var(--text2);" onclick="sendQuotToChat()">💬 Send to Chat</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ===== SYSTEM PROMPT =====
+const BASE_SYSTEM = `You are the Shezman Enterprises True AI Agent — a multi-layer procurement and business intelligence system built for Shezman Enterprises, a procurement and supply chain coordination firm based in Sabon Gari, Zaria, Kaduna State, Nigeria. The founder studies Public Administration at Ahmadu Bello University (ABU), Zaria, and serves NGOs, government contractors, SMEs, and institutions across Northern Nigeria.
+
+You are not just a chatbot. You are an AI agent with the following capabilities:
+
+===== AGENT IDENTITY =====
+Name: Shezman AI Agent
+Role: Procurement & Business Operations Intelligence System
+Version: 6.0 — Multi-Provider Agent Build
+Location: Sabon Gari, Zaria, Kaduna State, Nigeria
+
+===== AGENT OBJECTIVES =====
+1. Reduce procurement costs for clients
+2. Optimize supplier selection and vendor decisions
+3. Generate winning proposals and pitches
+4. Support supply chain coordination across Northern Nigeria
+5. Provide actionable business intelligence for Shezman Enterprises growth
+
+===== AGENT CONSTRAINTS =====
+- Never fabricate specific supplier contacts or phone numbers
+- Always ground advice in Nigerian market realities (Kaduna, Kano, Zaria, Abuja)
+- Never reveal API keys or internal configurations
+- Do not give financial advice beyond procurement and business margins
+
+===== 12 ADVISORY MODULES =====
+
+[PROCUREMENT]
+1. SUPPLIER SOURCING — Find reliable suppliers across Zaria, Kaduna, Kano, Lagos; cover Zaria Central Market, Sabon Gari Market, Kasuwan Barci, Kano Fagge, BPP registered vendors, UNGM, TradeDepot, Omnibiz, Jiji
+2. VENDOR VERIFICATION — CAC check, physical address verification, reference checks, trial orders, proforma invoice review, fraud pattern warnings, vendor scoring
+3. MARKET PRICE INTELLIGENCE — Real price benchmarking, markup calculation, procurement margins, negotiation positioning, price comparison across markets
+
+[OPERATIONS]
+4. SUPPLY CHAIN COORDINATION — End-to-end supply chain planning, multi-supplier coordination, LPOs, delivery notes, GRNs, invoice management, milestone tracking
+5. LOGISTICS PLANNING — Transportation planning for Northern Nigeria, Kobo360, GIG Logistics, ABC Transport, local haulage, last-mile delivery, logistics cost calculation
+
+[SALES & BUSINESS]
+6. OFFER CREATION — Premium service packages for NGOs, contractors, institutions
+7. PROPOSAL & COPYWRITING — Capability statements, pitch letters, procurement proposals, Nigerian institutional buyer language
+8. OBJECTION HANDLING — Handle "price too high", "we have a vendor", "we'll get back to you" — sharp respectful responses
+9. CLIENT FOLLOW-UP — Follow-up scripts, timing strategies, relationship maintenance without being annoying
+10. PRICING & NEGOTIATION — Service fees, commissions, retainers, markup strategies for Kaduna market and NGO procurement cycles
+11. NGO & CONTRACTOR PITCHING — Win supply chain coordination mandates; target UN agencies, INGOs, local NGOs, government contractors; BPP portal, UNGM registration
+12. MINDSET & EXECUTION — Action-oriented advice for building the business while managing ABU Zaria studies
+
+===== AGENT REASONING PROTOCOL =====
+For every request, you MUST:
+1. ANALYZE — Understand exactly what the user needs
+2. IDENTIFY MODULE — State which module(s) you are drawing from using [Module Name] badge format
+3. PLAN — If multi-step, briefly outline your approach before executing
+4. EXECUTE — Deliver specific, actionable intelligence
+5. VERIFY — Check your advice is grounded in Nigerian market reality
+6. NEXT ACTION — Always end with one concrete next action the founder can take today
+
+===== TOOL AWARENESS =====
+When the user asks about suppliers, prices, logistics costs, quotations, or vendor checks — acknowledge that you are processing this through your tool system and provide structured output.
+
+For supplier searches: List 3-5 specific markets/sources with context
+For price intelligence: Give price ranges with market benchmarks  
+For logistics: Calculate estimated costs with route specifics
+For quotations: Provide itemized breakdowns with margin calculations
+
+===== OUTPUT FORMAT =====
+- Use [Module Name] labels before responses
+- Use **bold** for key terms and numbers
+- Use bullet points for lists
+- Use structured steps for plans
+- End every response with: 🎯 **Next Action:** [one specific action to take today]
+- Keep language clear, direct, and practical
+- Reference specific Nigerian markets, platforms, and processes`;
+
+// ===== STATE =====
+let history = [];
+let sessionStats = { msgs: 0, tools: 0, sessions: 0, mems: 0 };
+let quotItems = [];
+let lastQuotData = null;
+
+// ===== INIT =====
+window.addEventListener('load', () => {
+  loadSettings();
+  loadMemory();
+  updateStats();
+
+  // increment session count
+  const sc = parseInt(localStorage.getItem('se_sessions') || '0') + 1;
+  localStorage.setItem('se_sessions', sc);
+  sessionStats.sessions = sc;
+  updateStats();
+
+  // load previous conversation if exists
+  const saved = localStorage.getItem('se_last_history');
+  if (saved) {
+    try {
+      const parsed = JSON.parse(saved);
+      if (parsed.length > 0) {
+        history = parsed;
+        // show last few messages
+        const recent = parsed.slice(-6);
+        recent.forEach(m => {
+          appendMessage(m.role === 'user' ? 'user' : 'ai',
+            m.role === 'user' ? m.content : format(m.content));
+        });
+        appendMessage('ai', '<span style="color:var(--muted);font-size:11px;">↑ Previous session restored · ' + parsed.length + ' messages in memory</span>');
+      }
+    } catch(e) {}
+  } else {
+    // welcome message
+    appendMessage('ai', format(`<span class="mod-badge mb-t">AGENT ONLINE</span>
+
+**Welcome to Shezman Enterprises AI Agent v6.**
+
+I am your full procurement and business intelligence system — now powered by **3 AI providers**:
+
+- 🟠 **Anthropic Claude** — Deep reasoning, long context
+- 🔵 **Google Gemini** — Fast, multimodal intelligence
+- 🟣 **OpenRouter** — Free Llama 3.3, Mixtral, DeepSeek R1 (browser-friendly)
+
+Switch providers anytime in ⚙ **Settings** (top right). I also have:
+
+- 🧠 **Persistent Memory** — I remember your previous sessions
+- ⚙ **Tool System** — Supplier search, price intel, quotation builder, logistics planner
+- 📋 **Multi-Step Reasoning** — I plan before I execute
+- 📦 **Procurement Intelligence** — Grounded in Kaduna, Kano, Zaria market realities
+
+Use the **quick actions** above, the **tool buttons** on the left, or just type your question below.
+
+🎯 **Next Action:** Tell me what procurement challenge you are working on today.`));
+  }
+});
+
+// ===== SETTINGS =====
+function openSettings() { document.getElementById('settingsOverlay').classList.add('open'); }
+function closeSettings() { document.getElementById('settingsOverlay').classList.remove('open'); }
+
+function updateProviderUI() {
+  const p = document.getElementById('providerSelect').value;
+  document.getElementById('anthropicFields').style.display = p === 'anthropic'   ? '' : 'none';
+  document.getElementById('geminiFields').style.display   = p === 'gemini'       ? '' : 'none';
+  document.getElementById('groqFields').style.display     = p === 'openrouter'   ? '' : 'none';
+}
+
+function loadSettings() {
+  const provider = localStorage.getItem('se_provider') || 'anthropic';
+  const key      = localStorage.getItem('se_api_key');
+  const gemKey   = localStorage.getItem('se_gemini_key');
+  const groqKey  = localStorage.getItem('se_groq_key');
+  const tokens   = localStorage.getItem('se_tokens');
+  const persona  = localStorage.getItem('se_persona');
+  const style    = localStorage.getItem('se_style');
+  const cModel   = localStorage.getItem('se_claude_model');
+  const gModel   = localStorage.getItem('se_gemini_model');
+  const grModel  = localStorage.getItem('se_groq_model');
+
+  document.getElementById('providerSelect').value = provider;
+  if (key)    document.getElementById('apiKeyInput').value    = key;
+  if (gemKey) document.getElementById('geminiKeyInput').value = gemKey;
+  if (groqKey)document.getElementById('groqKeyInput').value   = groqKey;
+  if (tokens) document.getElementById('tokenInput').value     = tokens;
+  if (persona)document.getElementById('personaSelect').value  = persona;
+  if (style)  document.getElementById('styleSelect').value    = style;
+  if (cModel) document.getElementById('claudeModelSelect').value  = cModel;
+  if (gModel) document.getElementById('geminiModelSelect').value  = gModel;
+  if (grModel)document.getElementById('groqModelSelect').value    = grModel;
+
+  updateProviderUI();
+  updateTokenDisplay();
+}
+
+function saveSettings() {
+  const provider = document.getElementById('providerSelect').value;
+  const key      = document.getElementById('apiKeyInput').value.trim();
+  const gemKey   = document.getElementById('geminiKeyInput').value.trim();
+  const groqKey  = document.getElementById('groqKeyInput').value.trim();
+  const tokens   = document.getElementById('tokenInput').value;
+  const persona  = document.getElementById('personaSelect').value;
+  const style    = document.getElementById('styleSelect').value;
+  const cModel   = document.getElementById('claudeModelSelect').value;
+  const gModel   = document.getElementById('geminiModelSelect').value;
+  const grModel  = document.getElementById('groqModelSelect').value;
+
+  localStorage.setItem('se_provider', provider);
+  if (key)    localStorage.setItem('se_api_key', key);
+  if (gemKey) localStorage.setItem('se_gemini_key', gemKey);
+  if (groqKey)localStorage.setItem('se_groq_key', groqKey);
+  if (tokens) localStorage.setItem('se_tokens', tokens);
+  localStorage.setItem('se_persona', persona);
+  localStorage.setItem('se_style', style);
+  localStorage.setItem('se_claude_model', cModel);
+  localStorage.setItem('se_gemini_model', gModel);
+  localStorage.setItem('se_groq_model', grModel);
+
+  updateTokenDisplay();
+  closeSettings();
+  const providerLabels = { anthropic: 'Claude (Anthropic)', gemini: 'Google Gemini', openrouter: 'OpenRouter (Llama/Mixtral)' };
+  appendMessage('ai', `<strong>✅ Settings saved.</strong> Active provider: <strong>${providerLabels[provider]}</strong>. Agent configuration updated and stored in this browser.`);
+}
+
+function updateTokenDisplay() {
+  const t = localStorage.getItem('se_tokens') || '1500';
+  document.getElementById('tokenCount').textContent = 'tokens: ' + t;
+  const p = localStorage.getItem('se_provider') || 'anthropic';
+  const labels = { anthropic: '🟠 Claude · Multi-Step Active', gemini: '🔵 Gemini · Multi-Step Active', openrouter: '🟣 OpenRouter · Llama/Mixtral' };
+  const el = document.getElementById('activeProviderLabel');
+  if (el) el.textContent = labels[p] || 'Claude';
+}
+
+// ===== MEMORY =====
+function saveToMemory(userMsg) {
+  const mems = JSON.parse(localStorage.getItem('se_memory') || '[]');
+  const summary = userMsg.substring(0, 80) + (userMsg.length > 80 ? '…' : '');
+  mems.unshift({ text: summary, date: new Date().toLocaleDateString('en-GB', {day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}) });
+  if (mems.length > 20) mems.pop();
+  localStorage.setItem('se_memory', JSON.stringify(mems));
+  localStorage.setItem('se_last_history', JSON.stringify(history));
+  loadMemory();
+}
+
+function loadMemory() {
+  const mems = JSON.parse(localStorage.getItem('se_memory') || '[]');
+  const sc = parseInt(localStorage.getItem('se_sessions') || '0');
+  const list = document.getElementById('memList');
+  sessionStats.mems = mems.length;
+  sessionStats.sessions = sc;
+  if (mems.length === 0) {
+    list.innerHTML = '<div style="font-size:11px;color:var(--muted);padding:4px 0;">No sessions yet.</div>';
+    return;
+  }
+  list.innerHTML = mems.map((m, i) => `
+    <div class="mem-item" onclick="recallMemory(${i})">
+      ${m.text}
+      <div class="mem-date">${m.date}</div>
+    </div>`).join('');
+  updateStats();
+}
+
+function recallMemory(i) {
+  const mems = JSON.parse(localStorage.getItem('se_memory') || '[]');
+  if (mems[i]) {
+    document.getElementById('userInput').value = mems[i].text;
+    autoResize(document.getElementById('userInput'));
+  }
+}
+
+function clearMemory() {
+  if (!confirm('Clear all agent memory and session history?')) return;
+  localStorage.removeItem('se_memory');
+  localStorage.removeItem('se_last_history');
+  localStorage.removeItem('se_sessions');
+  history = [];
+  sessionStats = { msgs: 0, tools: 0, sessions: 0, mems: 0 };
+  loadMemory();
+  updateStats();
+  appendMessage('ai', '🗑 <strong>Memory cleared.</strong> Starting fresh session.');
+}
+
+// ===== STATS =====
+function updateStats() {
+  document.getElementById('statMsgs').textContent = sessionStats.msgs;
+  document.getElementById('statTools').textContent = sessionStats.tools;
+  document.getElementById('statSessions').textContent = sessionStats.sessions;
+  document.getElementById('statMems').textContent = sessionStats.mems;
+}
+
+// ===== TOOL SYSTEM =====
+function runTool(tool) {
+  sessionStats.tools++;
+  updateStats();
+
+  const panel = document.getElementById('rightPanel');
+  const title = document.getElementById('rpTitle');
+  const body = document.getElementById('rpBody');
+  panel.classList.add('open');
+
+  const tools = {
+    supplier: {
+      name: 'SUPPLIER SEARCH',
+      desc: 'Search for suppliers across Northern Nigeria markets',
+      fn: supplierSearch
+    },
+    price: {
+      name: 'PRICE INTELLIGENCE',
+      desc: 'Get market price benchmarks for common commodities',
+      fn: priceIntel
+    },
+    quotation: {
+      name: 'QUOTATION BUILDER',
+      desc: 'Build a professional procurement quotation',
+      fn: openQuotation
+    },
+    logistics: {
+      name: 'LOGISTICS PLANNER',
+      desc: 'Calculate logistics costs and routes in Northern Nigeria',
+      fn: logisticsPlanner
+    },
+    vendor: {
+      name: 'VENDOR CHECKER',
+      desc: 'Vendor verification checklist and scoring',
+      fn: vendorChecker
+    },
+    margin: {
+      name: 'MARGIN CALCULATOR',
+      desc: 'Calculate procurement margins and service fees',
+      fn: marginCalc
+    },
+    pitch: {
+      name: 'NGO PITCH WRITER',
+      desc: 'Generate pitch letter to NGO or contractor',
+      fn: pitchWriter
+    },
+    plan: {
+      name: 'PROCUREMENT PLANNER',
+      desc: 'Multi-step procurement plan generator',
+      fn: procurementPlan
+    }
+  };
+
+  const t = tools[tool];
+  if (!t) return;
+
+  title.textContent = t.name;
+  t.fn(body);
+}
+
+function closeRightPanel() {
+  document.getElementById('rightPanel').classList.remove('open');
+}
+
+function supplierSearch(body) {
+  body.innerHTML = `
+    <div style="font-size:11px;color:var(--muted);margin-bottom:10px;">Search for suppliers by product category</div>
+    <div class="field"><label>PRODUCT / COMMODITY</label>
+    <input type="text" id="ssProd" placeholder="e.g. cement, diesel, rice, printing" style="width:100%;background:var(--dark3);border:1px solid var(--border2);color:var(--text);border-radius:6px;padding:8px 10px;font-size:12px;font-family:'Barlow',sans-serif;outline:none;"/></div>
+    <div class="field"><label>LOCATION</label>
+    <input type="text" id="ssLoc" placeholder="e.g. Zaria, Kaduna, Kano" style="width:100%;background:var(--dark3);border:1px solid var(--border2);color:var(--text);border-radius:6px;padding:8px 10px;font-size:12px;font-family:'Barlow',sans-serif;outline:none;"/></div>
+    <button class="save-btn" style="width:100%;margin-top:4px;" onclick="execSupplierSearch()">🔍 SEARCH</button>
+    <div class="rp-output" id="ssOutput">Results will appear here…</div>`;
+}
+
+function execSupplierSearch() {
+  const prod = document.getElementById('ssProd')?.value || 'general goods';
+  const loc = document.getElementById('ssLoc')?.value || 'Kaduna';
+  const out = document.getElementById('ssOutput');
+  out.style.color = 'var(--gold)';
+  out.textContent = 'Searching supplier network…';
+  setTimeout(() => {
+    out.style.color = 'var(--green)';
+    out.textContent = `[SUPPLIER SEARCH TOOL]\nProduct: ${prod}\nLocation: ${loc}\n\nSending query to AI agent for full analysis…`;
+    ask(`Search for ${prod} suppliers in ${loc}. Give me specific markets, sourcing tips, and how to verify them.`);
+    closeRightPanel();
+  }, 800);
+}
+
+function priceIntel(body) {
+  const commodities = ['Cement (50kg bag)', 'Diesel (per litre)', 'Rice (50kg bag)', 'Iron Rods (per tonne)', 'Printing Paper (A4 ream)', 'Bottled Water (crate)', 'Fuel (petrol, per litre)', 'Sugar (50kg bag)'];
+  body.innerHTML = `
+    <div style="font-size:11px;color:var(--muted);margin-bottom:10px;">Get market price intelligence for commodities</div>
+    <div class="field"><label>SELECT COMMODITY</label>
+    <select id="piCom" style="width:100%;background:var(--dark3);border:1px solid var(--border2);color:var(--text);border-radius:6px;padding:8px 10px;font-size:12px;font-family:'Barlow',sans-serif;outline:none;">
+    ${commodities.map(c => `<option>${c}</option>`).join('')}
+    </select></div>
+    <div class="field"><label>MARKET</label>
+    <select id="piMkt" style="width:100%;background:var(--dark3);border:1px solid var(--border2);color:var(--text);border-radius:6px;padding:8px 10px;font-size:12px;font-family:'Barlow',sans-serif;outline:none;">
+    <option>Zaria Central Market</option>
+    <option>Sabon Gari Market, Zaria</option>
+    <option>Kaduna Main Market</option>
+    <option>Kasuwan Barci, Kaduna</option>
+    <option>Kano Fagge Market</option>
+    <option>Singer Market, Kaduna</option>
+    </select></div>
+    <button class="save-btn" style="width:100%;margin-top:4px;" onclick="execPriceIntel()">💰 GET PRICES</button>
+    <div class="rp-output" id="piOutput">Price data will appear here…</div>`;
+}
+
+function execPriceIntel() {
+  const com = document.getElementById('piCom')?.value;
+  const mkt = document.getElementById('piMkt')?.value;
+  const out = document.getElementById('piOutput');
+  out.style.color = 'var(--gold)';
+  out.textContent = 'Querying price intelligence…';
+  setTimeout(() => {
+    out.style.color = 'var(--green)';
+    out.textContent = `[PRICE INTEL TOOL]\n${com}\n${mkt}\n\nSending to AI agent…`;
+    ask(`What is the current market price for ${com} in ${mkt}? Give me a price range, benchmarks, and negotiation tips.`);
+    closeRightPanel();
+  }, 700);
+}
+
+function openQuotation() {
+  closeRightPanel();
+  document.getElementById('quotPanel').classList.add('open');
+}
+
+function generateQuotation() {
+  const client = document.getElementById('qClient').value || 'Client';
+  const item = document.getElementById('qItem').value || 'Procurement Service';
+  const unit = parseFloat(document.getElementById('qUnit').value) || 0;
+  const qty = parseFloat(document.getElementById('qQty').value) || 1;
+  const fee = parseFloat(document.getElementById('qFee').value) || 8;
+  const logistics = parseFloat(document.getElementById('qLogistics').value) || 0;
+
+  const subtotal = unit * qty;
+  const serviceFee = subtotal * (fee / 100);
+  const total = subtotal + serviceFee + logistics;
+
+  const table = document.getElementById('quotTable');
+  table.innerHTML = `
+    <tr><th>Item</th><th>Qty</th><th>Unit (₦)</th><th>Amount (₦)</th></tr>
+    <tr><td>${item}</td><td>${qty}</td><td>${unit.toLocaleString()}</td><td>${subtotal.toLocaleString()}</td></tr>
+    <tr><td>Service Coordination Fee (${fee}%)</td><td>—</td><td>—</td><td>${serviceFee.toLocaleString()}</td></tr>
+    <tr><td>Logistics & Delivery</td><td>—</td><td>—</td><td>${logistics.toLocaleString()}</td></tr>`;
+
+  document.getElementById('quotTotal').innerHTML = `<span>TOTAL PAYABLE</span><span>₦${total.toLocaleString()}</span>`;
+  document.getElementById('quotOutput').style.display = 'block';
+
+  lastQuotData = { client, item, qty, unit, subtotal, serviceFee, logistics, total, fee };
+  sessionStats.tools++;
+  updateStats();
+}
+
+function sendQuotToChat() {
+  if (!lastQuotData) return;
+  const d = lastQuotData;
+  const msg = `📄 **Quotation Generated for ${d.client}**\n\n**Item:** ${d.item}\n**Quantity:** ${d.qty}\n**Unit Price:** ₦${d.unit.toLocaleString()}\n**Subtotal:** ₦${d.subtotal.toLocaleString()}\n**Service Fee (${d.fee}%):** ₦${d.serviceFee.toLocaleString()}\n**Logistics:** ₦${d.logistics.toLocaleString()}\n**TOTAL:** ₦${d.total.toLocaleString()}`;
+  document.getElementById('quotPanel').classList.remove('open');
+  ask(`I just generated this quotation. Please review it and suggest if my pricing and service fee are competitive for the Kaduna NGO market:\n\n${msg}`);
+}
+
+function logisticsPlanner(body) {
+  body.innerHTML = `
+    <div style="font-size:11px;color:var(--muted);margin-bottom:10px;">Calculate logistics costs for Northern Nigeria routes</div>
+    <div class="field"><label>FROM</label>
+    <input type="text" id="lpFrom" placeholder="e.g. Kano" style="width:100%;background:var(--dark3);border:1px solid var(--border2);color:var(--text);border-radius:6px;padding:8px 10px;font-size:12px;font-family:'Barlow',sans-serif;outline:none;"/></div>
+    <div class="field"><label>TO</label>
+    <input type="text" id="lpTo" placeholder="e.g. Zaria" style="width:100%;background:var(--dark3);border:1px solid var(--border2);color:var(--text);border-radius:6px;padding:8px 10px;font-size:12px;font-family:'Barlow',sans-serif;outline:none;"/></div>
+    <div class="field"><label>CARGO WEIGHT (TONNES)</label>
+    <input type="number" id="lpWeight" placeholder="e.g. 2" style="width:100%;background:var(--dark3);border:1px solid var(--border2);color:var(--text);border-radius:6px;padding:8px 10px;font-size:12px;font-family:'Barlow',sans-serif;outline:none;"/></div>
+    <button class="save-btn" style="width:100%;margin-top:4px;" onclick="execLogistics()">🚛 CALCULATE</button>
+    <div class="rp-output" id="lpOutput">Logistics estimate will appear here…</div>`;
+}
+
+function execLogistics() {
+  const from = document.getElementById('lpFrom')?.value || 'Kano';
+  const to = document.getElementById('lpTo')?.value || 'Zaria';
+  const weight = document.getElementById('lpWeight')?.value || '1';
+  const out = document.getElementById('lpOutput');
+  out.style.color = 'var(--gold)';
+  out.textContent = 'Planning route…';
+  setTimeout(() => {
+    out.style.color = 'var(--green)';
+    out.textContent = `[LOGISTICS TOOL]\nRoute: ${from} → ${to}\nWeight: ${weight} tonnes\n\nSending to AI agent…`;
+    ask(`Plan logistics from ${from} to ${to} for ${weight} tonnes of cargo. Estimate the cost, best transport option, and any delivery challenges in Northern Nigeria.`);
+    closeRightPanel();
+  }, 700);
+}
+
+function vendorChecker(body) {
+  body.innerHTML = `
+    <div style="font-size:11px;color:var(--muted);margin-bottom:10px;">Score and verify a vendor before committing</div>
+    <div class="field"><label>VENDOR NAME</label>
+    <input type="text" id="vcName" placeholder="e.g. Kaduna Supplies Ltd" style="width:100%;background:var(--dark3);border:1px solid var(--border2);color:var(--text);border-radius:6px;padding:8px 10px;font-size:12px;font-family:'Barlow',sans-serif;outline:none;"/></div>
+    <div class="field"><label>PRODUCT / SERVICE</label>
+    <input type="text" id="vcProd" placeholder="e.g. office furniture" style="width:100%;background:var(--dark3);border:1px solid var(--border2);color:var(--text);border-radius:6px;padding:8px 10px;font-size:12px;font-family:'Barlow',sans-serif;outline:none;"/></div>
+    <button class="save-btn" style="width:100%;margin-top:4px;" onclick="execVendorCheck()">✅ CHECK VENDOR</button>
+    <div class="rp-output" id="vcOutput">Verification checklist will appear here…</div>`;
+}
+
+function execVendorCheck() {
+  const name = document.getElementById('vcName')?.value || 'the vendor';
+  const prod = document.getElementById('vcProd')?.value || 'goods';
+  const out = document.getElementById('vcOutput');
+  out.style.color = 'var(--gold)';
+  out.textContent = 'Running verification protocol…';
+  setTimeout(() => {
+    out.style.color = 'var(--green)';
+    out.textContent = `[VENDOR CHECKER]\nVendor: ${name}\nProduct: ${prod}\n\nGenerating checklist…`;
+    ask(`Give me a full vendor verification checklist and scoring guide for a supplier called "${name}" who supplies ${prod}. Include CAC check, red flags to watch, and a scoring template.`);
+    closeRightPanel();
+  }, 700);
+}
+
+function marginCalc(body) {
+  body.innerHTML = `
+    <div style="font-size:11px;color:var(--muted);margin-bottom:10px;">Calculate procurement margin and profit</div>
+    <div class="field"><label>COST PRICE (₦)</label>
+    <input type="number" id="mcCost" placeholder="e.g. 500000" style="width:100%;background:var(--dark3);border:1px solid var(--border2);color:var(--text);border-radius:6px;padding:8px 10px;font-size:12px;font-family:'Barlow',sans-serif;outline:none;"/></div>
+    <div class="field"><label>SELLING PRICE (₦)</label>
+    <input type="number" id="mcSell" placeholder="e.g. 580000" style="width:100%;background:var(--dark3);border:1px solid var(--border2);color:var(--text);border-radius:6px;padding:8px 10px;font-size:12px;font-family:'Barlow',sans-serif;outline:none;"/></div>
+    <button class="save-btn" style="width:100%;margin-top:4px;" onclick="execMargin()">📊 CALCULATE</button>
+    <div class="rp-output" id="mcOutput">Results will appear here…</div>`;
+}
+
+function execMargin() {
+  const cost = parseFloat(document.getElementById('mcCost')?.value) || 0;
+  const sell = parseFloat(document.getElementById('mcSell')?.value) || 0;
+  const out = document.getElementById('mcOutput');
+  if (!cost || !sell) { out.textContent = 'Enter both values.'; return; }
+  const profit = sell - cost;
+  const margin = ((profit / sell) * 100).toFixed(1);
+  const markup = ((profit / cost) * 100).toFixed(1);
+  out.style.color = 'var(--green)';
+  out.textContent = `[MARGIN CALCULATOR]\n\nCost Price:   ₦${cost.toLocaleString()}\nSelling Price: ₦${sell.toLocaleString()}\n\nGross Profit:  ₦${profit.toLocaleString()}\nProfit Margin: ${margin}%\nMarkup:        ${markup}%\n\n${margin > 15 ? '✅ Healthy margin for NGO procurement.' : margin > 8 ? '⚠ Acceptable. Consider raising fee.' : '❌ Margin too low. Renegotiate cost.'}`;
+  sessionStats.tools++;
+  updateStats();
+}
+
+function pitchWriter(body) {
+  body.innerHTML = `
+    <div style="font-size:11px;color:var(--muted);margin-bottom:10px;">Generate a professional pitch letter</div>
+    <div class="field"><label>TARGET ORGANISATION</label>
+    <input type="text" id="pwOrg" placeholder="e.g. UNICEF Zaria, Save the Children" style="width:100%;background:var(--dark3);border:1px solid var(--border2);color:var(--text);border-radius:6px;padding:8px 10px;font-size:12px;font-family:'Barlow',sans-serif;outline:none;"/></div>
+    <div class="field"><label>SERVICE TO PITCH</label>
+    <input type="text" id="pwSvc" placeholder="e.g. procurement coordination, supply chain" style="width:100%;background:var(--dark3);border:1px solid var(--border2);color:var(--text);border-radius:6px;padding:8px 10px;font-size:12px;font-family:'Barlow',sans-serif;outline:none;"/></div>
+    <button class="save-btn" style="width:100%;margin-top:4px;" onclick="execPitch()">🎯 WRITE PITCH</button>`;
+}
+
+function execPitch() {
+  const org = document.getElementById('pwOrg')?.value || 'an NGO';
+  const svc = document.getElementById('pwSvc')?.value || 'procurement coordination';
+  ask(`Write a professional pitch letter from Shezman Enterprises to ${org} offering ${svc} services. Make it compelling, specific to Northern Nigeria, and include our key value propositions.`);
+  closeRightPanel();
+}
+
+function procurementPlan(body) {
+  body.innerHTML = `
+    <div style="font-size:11px;color:var(--muted);margin-bottom:10px;">Generate a multi-step procurement plan</div>
+    <div class="field"><label>WHAT TO PROCURE</label>
+    <input type="text" id="ppItem" placeholder="e.g. 500 bags of rice for an NGO" style="width:100%;background:var(--dark3);border:1px solid var(--border2);color:var(--text);border-radius:6px;padding:8px 10px;font-size:12px;font-family:'Barlow',sans-serif;outline:none;"/></div>
+    <div class="field"><label>BUDGET (₦) — OPTIONAL</label>
+    <input type="text" id="ppBudget" placeholder="e.g. 2,000,000" style="width:100%;background:var(--dark3);border:1px solid var(--border2);color:var(--text);border-radius:6px;padding:8px 10px;font-size:12px;font-family:'Barlow',sans-serif;outline:none;"/></div>
+    <button class="save-btn" style="width:100%;margin-top:4px;" onclick="execPlan()">🧠 BUILD PLAN</button>`;
+}
+
+function execPlan() {
+  const item = document.getElementById('ppItem')?.value || 'procurement order';
+  const budget = document.getElementById('ppBudget')?.value;
+  const budgetStr = budget ? ` with a budget of ₦${budget}` : '';
+  ask(`Build a complete multi-step procurement plan for ${item}${budgetStr}. Include: supplier sourcing, vendor verification, price benchmarking, logistics, timeline, and documentation required. Be specific to Northern Nigeria.`);
+  closeRightPanel();
+}
+
+// ===== CHAT FUNCTIONS =====
+function autoResize(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 110) + 'px';
+}
+
+function handleKey(e) {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+}
+
+function ask(q) {
+  document.getElementById('userInput').value = q;
+  sendMessage();
+}
+
+function appendMessage(role, html) {
+  const wrap = document.createElement('div');
+  wrap.className = 'msg' + (role === 'user' ? ' user' : '');
+  const av = document.createElement('div');
+  av.className = 'av ' + (role === 'user' ? 'you' : 'ai');
+  if (role === 'user') { av.textContent = 'YOU'; } else { av.innerHTML = '<img src="data:image/png;base64,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" style="width:100%;height:100%;object-fit:contain;">'; }
+  const bub = document.createElement('div');
+  bub.className = 'bub ' + (role === 'user' ? 'user' : 'ai');
+  bub.innerHTML = html;
+  if (role === 'user') { wrap.appendChild(bub); wrap.appendChild(av); }
+  else { wrap.appendChild(av); wrap.appendChild(bub); }
+  document.getElementById('chat').appendChild(wrap);
+  document.getElementById('chat').scrollTop = document.getElementById('chat').scrollHeight;
+}
+
+function showTyping() {
+  const d = document.createElement('div');
+  d.className = 'msg'; d.id = 'typing';
+  d.innerHTML = `<div class="av ai">SE</div><div class="bub ai"><div class="typing"><span></span><span></span><span></span></div></div>`;
+  document.getElementById('chat').appendChild(d);
+  document.getElementById('chat').scrollTop = document.getElementById('chat').scrollHeight;
+}
+
+function removeTyping() {
+  const t = document.getElementById('typing');
+  if (t) t.remove();
+}
+
+function format(text) {
+  text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+  // Module badges
+  text = text.replace(/\[(Supplier Sourcing|Vendor Verification|Market Price Intelligence|Price Intelligence)\]/g, '<span class="mod-badge mb-p">$1</span>');
+  text = text.replace(/\[(Supply Chain|Supply Chain Coordination|Logistics|Logistics Planning)\]/g, '<span class="mod-badge mb-o">$1</span>');
+  text = text.replace(/\[(Offer Creation|Proposals?|Objection Handling|Follow.Up|Pricing|NGO Pitch|NGO & Contractor Pitching|Mindset|Execution|Copywriting|Closing|Procurement Planning)\]/g, '<span class="mod-badge mb-s">$1</span>');
+  text = text.replace(/\[(AGENT ONLINE|TOOL RESULT|PLAN|MEMORY|MULTI-STEP)\]/g, '<span class="mod-badge mb-t">$1</span>');
+  // Next action highlight
+  text = text.replace(/🎯 \*\*Next Action:\*\*/g, '🎯 <strong style="color:var(--gold-light)">Next Action:</strong>');
+  // Lists
+  text = text.replace(/^[-•] (.+)$/gm, '<li>$1</li>');
+  text = text.replace(/(<li>[\s\S]*?<\/li>)/g, '<ul>$1</ul>');
+  text = text.replace(/<\/ul>\s*<ul>/g, '');
+  text = text.replace(/\n\n/g, '<br><br>').replace(/\n/g, '<br>');
+  return text;
+}
+
+// ===== MULTI-PROVIDER API CALLS =====
+
+async function callAnthropic(systemPrompt, messages, maxTokens) {
+  const apiKey = localStorage.getItem('se_api_key');
+  if (!apiKey) throw new Error('missing_key');
+  const model = localStorage.getItem('se_claude_model') || 'claude-sonnet-4-20250514';
+  const res = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': apiKey,
+      'anthropic-version': '2023-06-01'
+    },
+    body: JSON.stringify({ model, max_tokens: maxTokens, system: systemPrompt, messages: messages.slice(-20) })
+  });
+  const data = await res.json();
+  if (!res.ok) {
+    if (res.status === 401) throw new Error('invalid_key');
+    if (res.status === 429) throw new Error('rate_limit');
+    throw new Error(data?.error?.message || 'api_error');
+  }
+  return data.content?.find(b => b.type === 'text')?.text || 'No response.';
+}
+
+async function callGemini(systemPrompt, messages, maxTokens) {
+  const apiKey = localStorage.getItem('se_gemini_key');
+  if (!apiKey) throw new Error('missing_key_gemini');
+  const model = localStorage.getItem('se_gemini_model') || 'gemini-2.0-flash';
+  // Convert history to Gemini format
+  const contents = messages.slice(-20).map(m => ({
+    role: m.role === 'assistant' ? 'model' : 'user',
+    parts: [{ text: m.content }]
+  }));
+  const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      system_instruction: { parts: [{ text: systemPrompt }] },
+      contents,
+      generationConfig: { maxOutputTokens: maxTokens }
+    })
+  });
+  const data = await res.json();
+  if (!res.ok) {
+    if (res.status === 400 || res.status === 403) throw new Error('invalid_key');
+    if (res.status === 429) throw new Error('rate_limit');
+    const errMsg = data?.error?.message || data?.error?.status || `api_error_${res.status}`;
+    throw new Error('Gemini error: ' + errMsg);
+  }
+  if (!data.candidates || data.candidates.length === 0) {
+    const blockReason = data?.promptFeedback?.blockReason;
+    if (blockReason) throw new Error('Gemini blocked: ' + blockReason);
+    throw new Error('Gemini returned no candidates');
+  }
+  return data.candidates[0]?.content?.parts?.[0]?.text || 'No response.';
+}
+
+async function callOpenRouter(systemPrompt, messages, maxTokens) {
+  const apiKey = localStorage.getItem('se_groq_key');
+  if (!apiKey) throw new Error('missing_key_groq');
+  const model = localStorage.getItem('se_groq_model') || 'meta-llama/llama-3.3-70b-instruct:free';
+  const orMessages = [{ role: 'system', content: systemPrompt }, ...messages.slice(-20)];
+
+  let res;
+  try {
+    res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${apiKey}`,
+        'HTTP-Referer': window.location.href,
+        'X-Title': 'Shezman Enterprises AI Agent'
+      },
+      body: JSON.stringify({ model, max_tokens: maxTokens, messages: orMessages })
+    });
+  } catch(netErr) {
+    throw new Error('network_error');
+  }
+
+  let data;
+  try { data = await res.json(); } catch(e) { throw new Error('parse_error'); }
+
+  if (!res.ok) {
+    if (res.status === 401 || res.status === 403) throw new Error('invalid_key');
+    if (res.status === 429) throw new Error('rate_limit');
+    if (res.status === 402) throw new Error('no_credits');
+    throw new Error(data?.error?.message || `api_error_${res.status}`);
+  }
+  const content = data.choices?.[0]?.message?.content;
+  if (!content) throw new Error('empty_response');
+  return content;
+}
+
+async function sendMessage() {
+  const q = document.getElementById('userInput').value.trim();
+  if (!q) return;
+
+  document.getElementById('userInput').value = '';
+  document.getElementById('userInput').style.height = 'auto';
+  document.getElementById('sendBtn').disabled = true;
+
+  appendMessage('user', q);
+  history.push({ role: 'user', content: q });
+  saveToMemory(q);
+  sessionStats.msgs++;
+  updateStats();
+  showTyping();
+
+  try {
+    const provider  = localStorage.getItem('se_provider') || 'anthropic';
+    const maxTokens = parseInt(localStorage.getItem('se_tokens') || '1500');
+
+    // Build system prompt with style
+    const style = localStorage.getItem('se_style') || 'direct';
+    const styleNote = style === 'detailed'   ? '\nIMPORTANT: Give detailed, thorough responses with full explanations.' :
+                      style === 'structured' ? '\nIMPORTANT: Always structure your response with numbered steps.' :
+                                               '\nIMPORTANT: Be direct and concise. Lead with the most important point.';
+    const systemPrompt = BASE_SYSTEM + styleNote;
+
+    let reply;
+    if (provider === 'gemini') {
+      reply = await callGemini(systemPrompt, history, maxTokens);
+    } else if (provider === 'openrouter') {
+      reply = await callOpenRouter(systemPrompt, history, maxTokens);
+    } else {
+      reply = await callAnthropic(systemPrompt, history, maxTokens);
+    }
+
+    removeTyping();
+    history.push({ role: 'assistant', content: reply });
+    localStorage.setItem('se_last_history', JSON.stringify(history));
+    appendMessage('ai', format(reply));
+
+  } catch (err) {
+    removeTyping();
+    let msg = '<strong>Error:</strong> Unable to process.';
+
+    if (window.location.protocol === 'file:') {
+      msg = '<strong>⚠ Local File Restriction:</strong> Browsers block API calls from local HTML files. Upload your agent to <strong>GitHub Pages</strong> — it is free. Ask me how if needed.';
+    } else if (err.message === 'missing_key') {
+      msg = '<strong>⚙ API Key Required:</strong> Click <strong>Settings</strong>, select <strong>Anthropic</strong> as provider, and enter your Claude API key.';
+    } else if (err.message === 'missing_key_gemini') {
+      msg = '<strong>⚙ Gemini Key Required:</strong> Click <strong>Settings</strong>, select <strong>Google Gemini</strong>, and enter your key from <a href="https://aistudio.google.com/app/apikey" target="_blank" style="color:var(--gold)">aistudio.google.com</a>.';
+    } else if (err.message === 'missing_key_groq') {
+      msg = '<strong>⚙ OpenRouter Key Required:</strong> Click <strong>Settings</strong>, select <strong>OpenRouter</strong>, and enter your free key from <a href="https://openrouter.ai/keys" target="_blank" style="color:var(--gold)">openrouter.ai/keys</a>.';
+    } else if (err.message === 'invalid_key') {
+      msg = '<strong>❌ Invalid API Key:</strong> Your key was rejected. Check it is copied correctly in Settings — no extra spaces.';
+    } else if (err.message === 'rate_limit') {
+      msg = '<strong>⏳ Too Many Requests (429):</strong> Your API key has hit its limit. This could mean: (1) Daily free quota is exhausted — wait until tomorrow, or (2) You are sending too fast — wait 30 seconds and try again. Try switching to a different provider in Settings.';
+    } else if (err.message === 'no_credits') {
+      msg = '<strong>💳 No Credits:</strong> Your OpenRouter account has no credits. Free models should not require credits — try switching model to <strong>Llama 3.3 70B (Free)</strong> in Settings.';
+    } else if (err.message === 'network_error') {
+      msg = '<strong>🌐 Network Error:</strong> Could not reach the API. Check your internet connection and try again.';
+    } else if (err.message === 'empty_response') {
+      msg = '<strong>⚠ Empty Response:</strong> The AI returned no content. Try a different model in Settings or rephrase your question.';
+    } else {
+      msg = `<strong>Error:</strong> ${err.message}`;
+    }
+    appendMessage('ai', msg);
+  }
+
+  document.getElementById('sendBtn').disabled = false;
+  document.getElementById('userInput').focus();
+}
+</script>
+</body>
+</html>
